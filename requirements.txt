@@ -1,0 +1,5 @@
+ansible==10.6.0
+ansible-lint==24.9.2
+Jinja2==3.1.4
+molecule==24.9.0
+molecule-plugins==v23.5.0

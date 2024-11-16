@@ -1,0 +1,33 @@
+---
+- name: Configure custom udev rules
+  hosts: all
+  become: true
+  tasks:
+    - name: Add custom udev rules
+      ansible.builtin.copy:
+        dest: /etc/udev/rules.d/99-custom-disk.rules
+        content: |
+          KERNEL=="vdc", SYMLINK+="xvdf"
+          KERNEL=="vdb", SYMLINK+="xvda"
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Reload udev rules
+      ansible.builtin.shell: |
+        udevadm control --reload-rules
+        udevadm trigger
+
+    - name: Create partition for /dev/xvda
+      parted:
+        device: "/dev/xvda"
+        number: "1"
+        label: gpt
+        align: minimal 
+        state: present
+      
+    - name: Create symlink
+      file:
+        src: "/dev/vdb1"
+        dest: "/dev/xvda14"
+        state: link

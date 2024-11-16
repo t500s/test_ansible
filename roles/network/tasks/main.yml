@@ -1,0 +1,12 @@
+---
+- name: Check if netplan command is available
+  ansible.builtin.command:
+    cmd: netplan status
+  register: netplan_command
+  ignore_errors: true
+  changed_when: "'molecule-idempotence-notest' not in ansible_skip_tags"
+
+- import_tasks: netplan.yml
+  when: 
+    - netplan_command.rc == 0
+    - ansible_default_ipv4.interface != network_name

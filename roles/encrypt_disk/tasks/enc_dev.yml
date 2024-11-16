@@ -1,0 +1,38 @@
+---
+- name: install requirements
+  ansible.builtin.package:
+    name:
+      - cryptsetup
+      - xfsprogs
+      - parted
+    state: present
+
+- name: Create LUKS container with a passphrase for second disk
+  community.crypto.luks_device:
+    device: "{{ enc_block_device }}"
+    state: "present"
+    passphrase: "{{ enc_password }}"
+    type: "{{ enc_luks_version }}"
+
+- name: Open the LUKS container for second disk
+  community.crypto.luks_device:
+    device: "{{ enc_block_device }}"
+    state: "opened"
+    name: "{{ enc_device }}"
+    passphrase: "{{ enc_password }}"
+  when: open_luks
+
+- name: Create LUKS container with a passphrase for partition near "/"
+  community.crypto.luks_device:
+    device: "{{ enc_secondary_partition }}"
+    state: "present"
+    passphrase: "{{ enc_secondary_password }}"
+    type: "{{ enc_secondary_luks_version }}"
+
+- name: Open the LUKS container for partition near "/"
+  community.crypto.luks_device:
+    device: "{{ enc_secondary_partition }}"
+    state: "opened"
+    name: "{{ enc_secondary_device }}"
+    passphrase: "{{ enc_secondary_password }}"
+  when: open_luks

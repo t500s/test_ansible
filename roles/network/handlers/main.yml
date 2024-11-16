@@ -1,0 +1,5 @@
+---
+# handlers file for network
+
+- name: apply netplan config
+  command: netplan apply

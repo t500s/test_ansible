@@ -1,0 +1,25 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+  provider:
+    name: libvirt
+
+platforms:
+  - name: ubuntu2404
+    box: jtarpley/ubuntu2404_base
+    memory: 1024
+    cpus: 2
+
+provisioner:
+  name: ansible
+  options:
+    D: True
+  lint:
+    name: ansible-lint
+  inventory:
+    links:
+      group_vars: ../../defaults/main.yml
+verifier:
+  name: ansible

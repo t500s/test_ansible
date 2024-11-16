@@ -1,0 +1,13 @@
+---
+
+- name: save grub configuration
+  template:
+    src: "cusom-grub.cfg.j2"
+    dest: /etc/default/grub.d/99-custom.cfg
+    mode: 0400
+    owner: root
+    group: root
+  notify: 
+    - update grub configs
+    - Reboot host
+  

@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: "Include encrypt_disk"
+      ansible.builtin.include_role:
+        name: encrypt_disk

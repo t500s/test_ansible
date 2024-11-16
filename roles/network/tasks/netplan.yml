@@ -1,0 +1,23 @@
+---
+
+
+- name: Device rename notification
+  debug:
+    msg: "Rename {{ ansible_default_ipv4.interface }} to {{ network_name }}"
+
+
+- name: save netplan configuration
+  template:
+    src: "99-net.yaml.j2"
+    dest: "/etc/netplan/99-rename-{{ network_name }}.yaml"
+    mode: 0600
+    owner: root
+    group: root
+  notify: apply netplan config
+
+- name: Refresh Ansible facts
+  ansible.builtin.setup:
+
+- name: Show new net device name
+  debug:
+    msg: "New default network device is {{ ansible_default_ipv4.interface }}"

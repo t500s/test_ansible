@@ -1,0 +1,10 @@
+*.retry
+*.swp
+*.rsa
+*.bak
+debug.yml
+.ansible
+.idea
+.venv
+.vault_pass
+.ssh

@@ -1,0 +1,35 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+  tasks:
+    - name: include default vars
+      ansible.builtin.include_vars:
+        dir: ../../defaults/
+        extensions:
+          - 'yml'
+    - name: Assert that interface name matches expected value initially
+      ansible.builtin.assert:
+        that:
+          - ansible_default_ipv4.interface == network_name
+        fail_msg: "The interface name {{ ansible_default_ipv4.interface }} does not match the expected value {{ network_name }}"
+        success_msg: "The initial interface name matches the expected value {{ network_name }}"
+
+    - name: Reboot host
+      reboot:
+        msg: "Reboot initiated by Ansible"
+        connect_timeout: 5
+        reboot_timeout: 300
+        pre_reboot_delay: 0
+        post_reboot_delay: 30
+        test_command: whoami
+
+    - name: Gather facts after reboot
+      ansible.builtin.setup:
+
+    - name: Assert that interface name matches expected value after reboot
+      ansible.builtin.assert:
+        that:
+          - ansible_default_ipv4.interface == network_name
+        fail_msg: "After reboot, the interface name {{ ansible_default_ipv4.interface }} does not match the expected value {{ network_name }}"
+        success_msg: "After reboot, the interface name matches the expected value {{ network_name }}"

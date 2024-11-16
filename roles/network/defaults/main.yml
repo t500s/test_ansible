@@ -1,0 +1,5 @@
+---
+
+default_network_name: "{{ ansible_default_ipv4.interface }}"
+default_network_mac: "{{ ansible_default_ipv4.macaddress }}"
+network_name: "net0"

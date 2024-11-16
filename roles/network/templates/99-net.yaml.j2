@@ -1,0 +1,7 @@
+network:
+  version: 2
+  ethernets:
+    {{ default_network_name }}:
+      match:
+        macaddress: "{{ default_network_mac }}"
+      set-name: "{{ network_name }}"

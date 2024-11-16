@@ -1,0 +1,28 @@
+---
+
+- name: Find partition after /
+  block:
+    - name: Find partition immediately after /
+      shell: "/usr/bin/lsblk -r -o NAME,MOUNTPOINTS | /usr/bin/awk '$2 == \"/\" {root=$1} $1 == root {found=1; next} found {print $1; exit}'"
+      register: next_part
+      failed_when: next_part.stdout == "" 
+      ignore_errors: true
+
+    - name: Check if next partition is mounted
+      shell: "lsblk -r -o NAME,MOUNTPOINTS | grep '{{ next_part.stdout }} ' | awk '{print $2}'"
+      register: mount_point
+      when: next_part.stdout != "" 
+
+    - name: Display the partition immediately after /
+      ansible.builtin.debug:
+        msg: "Partition immediately after root (/) is {{ next_part.stdout }} and not mounted"
+      when: mount_point.stdout == ""
+
+    - name: Set enc_secondary_partition
+      set_fact:
+        enc_secondary_partition: "/dev/{{ next_part.stdout }}"
+      when: mount_point.stdout == ""
+  when: not enc_secondary_partition
+
+- import_tasks: enc_dev.yml
+  when: enc_secondary_partition

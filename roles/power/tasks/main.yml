@@ -1,0 +1,16 @@
+---
+
+- name: Set grub C-state var for Intel 
+  set_fact:
+    c_state_line: "intel_idle.max_cstate=0"
+  when: "'GenuineIntel' in ansible_processor"
+
+- name: Set grub C-state var for AMD 
+  set_fact:
+    c_state_line: "processor.max_cstate=1"
+  when: "'AuthenticAMD' in ansible_processor"
+
+- import_tasks: cpufreq.yml
+
+- import_tasks: c_state.yml
+  when: c_state_line

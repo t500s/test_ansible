@@ -1,0 +1,6 @@
+---
+
+all:
+  hosts:
+    test:
+      ansible_host: 63.176.41.79

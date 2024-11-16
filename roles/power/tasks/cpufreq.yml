@@ -1,0 +1,14 @@
+---
+
+- name: ensure cpufreq utils are installed
+  apt: 
+    name: cpufrequtils
+
+- name: create config file
+  template: 
+    src: default.j2 
+    dest: /etc/default/cpufrequtils 
+    owner: root 
+    group: root 
+    mode: 0600
+  notify: activate cpufreq service

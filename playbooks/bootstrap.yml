@@ -1,0 +1,26 @@
+---
+- hosts: all
+  become: true
+  roles:
+    - role: network
+    - role: power
+    #- role: encrypt_disk
+
+  post_tasks:
+    - name: Display list of CPUs
+      debug:
+        msg: "CPU(s) available: {{ ansible_processor }}"
+
+    - name: Register cpu_flags
+      shell: "cat /proc/cpuinfo | grep flags | head -n 1 | awk -F ': ' '{print $2}'"
+      register: cpu_flags
+
+    - name: Check Intel Hyper-Threading (for Intel CPUs)
+      debug:
+        msg: "Intel Hyper-Threading (ht) is supported: {{ 'Yes' if 'ht' in cpu_flags.stdout else 'No' }}"
+      when: "'GenuineIntel' in ansible_processor"
+
+    - name: Check AMD multithreading (for AMD CPUs)
+      debug:
+        msg: "AMD multithreading supported: {{ 'Yes' if 'ht' in cpu_flags.stdout else 'No' }}"
+      when: "'AuthenticAMD' in ansible_processor"

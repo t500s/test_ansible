@@ -1,0 +1,18 @@
+services:
+  ansible-test-sobes:
+    build:
+      context: ../
+      dockerfile: .docker/Dockerfile
+    container_name: test_sobes_ansible
+    volumes:
+      - ../:/etc/ansible
+      - ../.ansible:/root/.ansible
+      - .ssh:/root/.ssh
+     # - /var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock #for molecula tests with vagrant and libvirt
+    working_dir: /etc/ansible
+    tty: true
+    command: /bin/bash
+    privileged: true #for molecula tests with vagrant and libvirt
+    network_mode: host
+
+
