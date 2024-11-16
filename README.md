@@ -12,7 +12,8 @@ docker exec -it test_sobes_ansible bash
 
 #### Setup on host
 
-Optionally create [venv](https://docs.python.org/3/library/venv.html)
+Optionally create [venv](https://docs.python.org/3/library/venv.html) and 
+
 `pip install -r requirements.txt`
 
 #### Run playbook
